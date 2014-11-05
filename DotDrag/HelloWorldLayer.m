@@ -21,16 +21,9 @@
 // Helper class method that creates a Scene with the HelloWorldLayer as the only child.
 +(CCScene *) scene
 {
-	// 'scene' is an autorelease object.
 	CCScene *scene = [CCScene node];
-	
-	// 'layer' is an autorelease object.
 	HelloWorldLayer *layer = [HelloWorldLayer node];
-	
-	// add layer as a child to scene
 	[scene addChild: layer];
-	
-	// return the scene
 	return scene;
 }
 
@@ -40,92 +33,44 @@
 	// always call "super" init
 	// Apple recommends to re-assign "self" with the "super's" return value
 	if( (self=[super init]) ) {
-		
-		// create and initialize a Label
-		CCLabelTTF *label = [CCLabelTTF labelWithString:@"Hello World" fontName:@"Marker Felt" fontSize:64];
+		      
+        
 
-		// ask director for the window size
-		CGSize size = [[CCDirector sharedDirector] winSize];
-	
-		// position the label on the center of the screen
-		label.position =  ccp( size.width /2 , size.height/2 );
-		
-		// add the label as a child to this Layer
-		[self addChild: label];
-		
-		
-		
-		//
-		// Leaderboards and Achievements
-		//
-		
-		// Default font size will be 28 points.
-		[CCMenuItemFont setFontSize:28];
-		
-		// Achievement Menu Item using blocks
-		CCMenuItem *itemAchievement = [CCMenuItemFont itemWithString:@"Achievements" block:^(id sender) {
-			
-			
-			GKAchievementViewController *achivementViewController = [[GKAchievementViewController alloc] init];
-			achivementViewController.achievementDelegate = self;
-			
-			AppController *app = (AppController*) [[UIApplication sharedApplication] delegate];
-			
-			[[app navController] presentModalViewController:achivementViewController animated:YES];
-			
-			[achivementViewController release];
-		}
-									   ];
-
-		// Leaderboard Menu Item using blocks
-		CCMenuItem *itemLeaderboard = [CCMenuItemFont itemWithString:@"Leaderboard" block:^(id sender) {
-			
-			
-			GKLeaderboardViewController *leaderboardViewController = [[GKLeaderboardViewController alloc] init];
-			leaderboardViewController.leaderboardDelegate = self;
-			
-			AppController *app = (AppController*) [[UIApplication sharedApplication] delegate];
-			
-			[[app navController] presentModalViewController:leaderboardViewController animated:YES];
-			
-			[leaderboardViewController release];
-		}
-									   ];
-		
-		CCMenu *menu = [CCMenu menuWithItems:itemAchievement, itemLeaderboard, nil];
-		
-		[menu alignItemsHorizontallyWithPadding:20];
-		[menu setPosition:ccp( size.width/2, size.height/2 - 50)];
-		
-		// Add the menu to the layer
-		[self addChild:menu];
-
+        self.isTouchEnabled = YES;
+        
+        CGSize screenSize = [[CCDirector sharedDirector] winSize];
+        background = [CCSprite spriteWithFile:@"DotDragBG-01.png"];
+        background.anchorPoint = ccp(0,0);
+        [self addChild:background];
+        background.position = ccp(0,0);
+        
+        title = [CCSprite spriteWithFile:@"title.png"];
+        title.anchorPoint = ccp(0,0);
+        [self addChild:title z:1];
+        title.position = ccp(screenSize.width / 2 - 100,screenSize.height/2 - 100);
+        
+        CCMenuItem *play = [CCMenuItemImage itemWithNormalImage:@"play.png" selectedImage:@"playPressed.png" target:self selector:@selector(playPressed:)];
+        play.position = ccp(220, 80);
+        
+        CCMenuItem *gamecenter = [CCMenuItemImage itemWithNormalImage:@"gamecenter.png" selectedImage:@"gamecenterPressed.png" target:self selector:@selector(gamecenterPressed)];
+        gamecenter.position = ccp(220, 30);
+        
+        
+        CCMenu *menu = [CCMenu menuWithItems:play,gamecenter, nil ];
+        menu.position = CGPointZero;
+        [self addChild:menu];
 	}
 	return self;
 }
 
-// on "dealloc" you need to release all your retained objects
-- (void) dealloc
-{
-	// in case you have something to dealloc, do it in this method
-	// in this particular example nothing needs to be released.
-	// cocos2d will automatically release all the children (Label)
-	
-	// don't forget to call "super dealloc"
-	[super dealloc];
+-(void)gamecenterPressed {
+    
 }
 
-#pragma mark GameKit delegate
-
--(void) achievementViewControllerDidFinish:(GKAchievementViewController *)viewController
-{
-	AppController *app = (AppController*) [[UIApplication sharedApplication] delegate];
-	[[app navController] dismissModalViewControllerAnimated:YES];
+-(void)playPressed {
+    
 }
 
--(void) leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
-{
-	AppController *app = (AppController*) [[UIApplication sharedApplication] delegate];
-	[[app navController] dismissModalViewControllerAnimated:YES];
-}
+
+
 @end
